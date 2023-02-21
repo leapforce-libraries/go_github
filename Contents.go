@@ -8,15 +8,15 @@ import (
 )
 
 type Contents struct {
-	Name        string      `json:"name"`
-	Path        string      `json:"path"`
-	Sha         string      `json:"sha"`
-	Size        int         `json:"size"`
-	Url         string      `json:"url"`
-	HtmlUrl     string      `json:"html_url"`
-	GitUrl      string      `json:"git_url"`
-	DownloadUrl interface{} `json:"download_url"`
-	Type        string      `json:"type"`
+	Name        string  `json:"name"`
+	Path        string  `json:"path"`
+	Sha         string  `json:"sha"`
+	Size        int     `json:"size"`
+	Url         string  `json:"url"`
+	HtmlUrl     string  `json:"html_url"`
+	GitUrl      string  `json:"git_url"`
+	DownloadUrl *string `json:"download_url"`
+	Type        string  `json:"type"`
 	Links       struct {
 		Self string `json:"self"`
 		Git  string `json:"git"`
@@ -25,17 +25,17 @@ type Contents struct {
 }
 
 type GetContentsConfig struct {
-	Owner    string
-	Contents string
-	Path     string
+	Owner string
+	Repo  string
+	Path  string
 }
 
-func (service *Service) GetContents(cfg *GetContentsConfig) (*Contents, *errortools.Error) {
-	var contents Contents
+func (service *Service) GetContents(cfg *GetContentsConfig) (*[]Contents, *errortools.Error) {
+	var contents []Contents
 
 	requestConfig := go_http.RequestConfig{
 		Method:        http.MethodGet,
-		Url:           service.url(fmt.Sprintf("%s/%s/contents/%s", cfg.Owner, cfg.Contents, cfg.Path)),
+		Url:           service.url(fmt.Sprintf("repos/%s/%s/contents/%s", cfg.Owner, cfg.Repo, cfg.Path)),
 		ResponseModel: &contents,
 	}
 	_, _, e := service.httpRequest(&requestConfig)
